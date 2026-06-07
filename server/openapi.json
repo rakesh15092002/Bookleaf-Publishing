@@ -1,0 +1,778 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "BookLeaf API",
+    "version": "1.0.0",
+    "description": "OpenAPI specification for the BookLeaf backend API. Import this file into Postman or any OpenAPI-compatible tool.",
+    "contact": {
+      "name": "BookLeaf Backend",
+      "email": "support@example.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "description": "Local development server"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": false },
+          "message": { "type": "string" },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": { "type": "string" },
+                "message": { "type": "string" }
+              }
+            }
+          }
+        }
+      },
+      "SuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean", "example": true },
+          "message": { "type": "string" },
+          "data": {}
+        }
+      },
+      "AuthLoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": { "type": "string", "format": "email", "example": "user@example.com" },
+          "password": { "type": "string", "example": "secret123" }
+        }
+      },
+      "AuthLoginData": {
+        "type": "object",
+        "properties": {
+          "token": { "type": "string" },
+          "user": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "name": { "type": "string" },
+              "email": { "type": "string", "format": "email" },
+              "role": { "type": "string", "example": "author" },
+              "author_id": { "type": "string" }
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string", "format": "email" },
+          "role": { "type": "string" },
+          "author_id": { "type": "string" }
+        }
+      },
+      "Book": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "title": { "type": "string" },
+          "description": { "type": "string" },
+          "author_id": { "type": "string" },
+          "isbn": { "type": "string" },
+          "price": { "type": "number", "format": "float" },
+          "status": { "type": "string" }
+        }
+      },
+      "RoyaltySummary": {
+        "type": "object",
+        "properties": {
+          "book_id": { "type": "string" },
+          "author_id": { "type": "string" },
+          "total_royalties": { "type": "number", "format": "float" },
+          "paid": { "type": "number", "format": "float" },
+          "pending": { "type": "number", "format": "float" },
+          "period": { "type": "string" }
+        }
+      },
+      "Ticket": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "subject": { "type": "string" },
+          "description": { "type": "string" },
+          "status": { "type": "string", "example": "open" },
+          "priority": { "type": "string", "example": "medium" },
+          "category": { "type": "string" },
+          "book_id": { "type": "string" },
+          "author_id": { "type": "string" },
+          "admin_category": { "type": "string" },
+          "admin_priority": { "type": "string" },
+          "ai_category": { "type": "string" },
+          "ai_priority": { "type": "string" },
+          "ai_draft": { "type": "string" },
+          "ai_source": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "TicketCreateRequest": {
+        "type": "object",
+        "required": ["subject", "description"],
+        "properties": {
+          "subject": { "type": "string", "example": "Unable to publish my book" },
+          "description": { "type": "string", "example": "My book failed to publish after the last update..." },
+          "book_id": { "type": "string", "example": "book-123" }
+        }
+      },
+      "TicketUpdateStatusRequest": {
+        "type": "object",
+        "required": ["status"],
+        "properties": {
+          "status": { "type": "string", "enum": ["open", "in_progress", "resolved", "closed"] }
+        }
+      },
+      "TicketUpdateCategoryRequest": {
+        "type": "object",
+        "required": ["category"],
+        "properties": {
+          "category": {
+            "type": "string",
+            "enum": [
+              "Royalty & Payments",
+              "ISBN & Metadata Issues",
+              "Printing & Quality",
+              "Distribution & Availability",
+              "Book Status & Production Updates",
+              "General Inquiry"
+            ]
+          }
+        }
+      },
+      "TicketUpdatePriorityRequest": {
+        "type": "object",
+        "required": ["priority"],
+        "properties": {
+          "priority": { "type": "string", "enum": ["critical", "high", "medium", "low"] }
+        }
+      },
+      "Message": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "ticket_id": { "type": "string" },
+          "content": { "type": "string" },
+          "sender_id": { "type": "string" },
+          "sender_role": { "type": "string" },
+          "author_id": { "type": "string" },
+          "is_internal": { "type": "boolean" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "MessageCreateRequest": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": { "type": "string", "example": "Please review the royalty statement." },
+          "is_internal": { "type": "boolean", "example": false }
+        }
+      },
+      "Note": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "ticket_id": { "type": "string" },
+          "content": { "type": "string" },
+          "created_by": { "type": "string" },
+          "created_at": { "type": "string", "format": "date-time" }
+        }
+      },
+      "NoteCreateRequest": {
+        "type": "object",
+        "required": ["content"],
+        "properties": {
+          "content": { "type": "string", "example": "Investigate the printing issue with the ISBN batch." }
+        }
+      },
+      "AIClassification": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string", "example": "Distribution & Availability" }
+        }
+      },
+      "AIPriority": {
+        "type": "object",
+        "properties": {
+          "priority": { "type": "string", "example": "high" }
+        }
+      },
+      "AIDraft": {
+        "type": "object",
+        "properties": {
+          "draft": { "type": "string" },
+          "source": { "type": "string" }
+        }
+      },
+      "AIProcessResult": {
+        "type": "object",
+        "properties": {
+          "category": { "type": "string" },
+          "priority": { "type": "string" },
+          "draft": { "type": "string" },
+          "source": { "type": "string" }
+        }
+      },
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "string", "example": "ok" },
+          "message": { "type": "string", "example": "BookLeaf API is running" },
+          "timestamp": { "type": "string", "format": "date-time" }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/api/auth/login": {
+      "post": {
+        "summary": "Login",
+        "description": "Authenticate a user and return a JWT token.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AuthLoginRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Login successful" },
+                    "data": { "$ref": "#/components/schemas/AuthLoginData" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Invalid credentials or unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "500": { "description": "Server error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Current user fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "User details fetched" },
+                    "data": { "$ref": "#/components/schemas/User" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized or invalid token", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/books": {
+      "get": {
+        "summary": "Get books",
+        "description": "Returns all books for admin or author-specific books for an author user.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Books fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Books fetched" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Book" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/books/my-books": {
+      "get": {
+        "summary": "Get author books",
+        "description": "Returns books owned by the authenticated author.",
+        "security": [{ "bearerAuth": [] }],
+        "responses": {
+          "200": {
+            "description": "Author books fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Books fetched" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Book" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/books/{id}": {
+      "get": {
+        "summary": "Get book by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Book fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Book fetched" },
+                    "data": { "$ref": "#/components/schemas/Book" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Access denied", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Book not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/books/{id}/royalty": {
+      "get": {
+        "summary": "Get royalty summary",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Royalty summary fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Royalty summary fetched" },
+                    "data": { "$ref": "#/components/schemas/RoyaltySummary" }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Access denied", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Book or royalty summary not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets": {
+      "get": {
+        "summary": "Get tickets",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "status", "in": "query", "schema": { "type": "string" } },
+          { "name": "priority", "in": "query", "schema": { "type": "string" } },
+          { "name": "category", "in": "query", "schema": { "type": "string" } },
+          { "name": "page", "in": "query", "schema": { "type": "integer", "default": 1 } },
+          { "name": "limit", "in": "query", "schema": { "type": "integer", "default": 10 } }
+        ],
+        "responses": {
+          "200": {
+            "description": "Tickets fetched",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Tickets fetched" },
+                    "data": {
+                      "type": "array",
+                      "items": { "$ref": "#/components/schemas/Ticket" }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "post": {
+        "summary": "Create a ticket",
+        "security": [{ "bearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TicketCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Ticket created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean", "example": true },
+                    "message": { "type": "string", "example": "Ticket created successfully" },
+                    "data": { "$ref": "#/components/schemas/Ticket" }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{id}": {
+      "get": {
+        "summary": "Get ticket by ID",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Ticket fetched", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Ticket fetched" }, "data": { "$ref": "#/components/schemas/Ticket" } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Access denied", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Ticket not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{id}/status": {
+      "patch": {
+        "summary": "Update ticket status",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TicketUpdateStatusRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Status updated", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Status updated" }, "data": { "$ref": "#/components/schemas/Ticket" } } } } } },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Ticket not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{id}/assign": {
+      "patch": {
+        "summary": "Assign ticket to admin",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Ticket assigned", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Ticket assigned" }, "data": { "$ref": "#/components/schemas/Ticket" } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Ticket not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{id}/category": {
+      "patch": {
+        "summary": "Update ticket category",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TicketUpdateCategoryRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Category updated", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Category updated" }, "data": { "$ref": "#/components/schemas/Ticket" } } } } } },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Ticket not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{id}/priority": {
+      "patch": {
+        "summary": "Update ticket priority",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/TicketUpdatePriorityRequest" }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Priority updated", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Priority updated" }, "data": { "$ref": "#/components/schemas/Ticket" } } } } } },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "404": { "description": "Ticket not found", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{ticketId}/messages": {
+      "get": {
+        "summary": "Get messages for a ticket",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Messages fetched", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Messages fetched" }, "data": { "type": "array", "items": { "$ref": "#/components/schemas/Message" } } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "post": {
+        "summary": "Send a message",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/MessageCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Message sent", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Message sent" }, "data": { "$ref": "#/components/schemas/Message" } } } } } },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{ticketId}/notes": {
+      "get": {
+        "summary": "Get notes for a ticket",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Notes fetched", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Notes fetched" }, "data": { "type": "array", "items": { "$ref": "#/components/schemas/Note" } } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "post": {
+        "summary": "Add a note",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NoteCreateRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": { "description": "Note added", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Note added" }, "data": { "$ref": "#/components/schemas/Note" } } } } } },
+          "400": { "description": "Validation failed", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/tickets/{ticketId}/notes/{noteId}": {
+      "delete": {
+        "summary": "Delete a note",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "noteId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Note deleted", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Note deleted" }, "data": { "type": ["object", "null"], "nullable": true } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/ai/classify/{ticketId}": {
+      "post": {
+        "summary": "Classify ticket category with AI",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Ticket classified", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Ticket classified" }, "data": { "$ref": "#/components/schemas/AIClassification" } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/ai/priority/{ticketId}": {
+      "post": {
+        "summary": "Score ticket priority with AI",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Priority scored", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Priority scored" }, "data": { "$ref": "#/components/schemas/AIPriority" } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/ai/draft/{ticketId}": {
+      "post": {
+        "summary": "Generate AI draft for a ticket",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Draft generated", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Draft generated" }, "data": { "$ref": "#/components/schemas/AIDraft" } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/api/ai/process/{ticketId}": {
+      "post": {
+        "summary": "Process ticket with AI classification, priority, and draft generation",
+        "security": [{ "bearerAuth": [] }],
+        "parameters": [
+          { "name": "ticketId", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Ticket processed by AI", "content": { "application/json": { "schema": { "type": "object", "properties": { "success": { "type": "boolean", "example": true }, "message": { "type": "string", "example": "Ticket processed by AI" }, "data": { "$ref": "#/components/schemas/AIProcessResult" } } } } } },
+          "401": { "description": "Unauthorized", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "403": { "description": "Admin only", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "API is running",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/HealthResponse" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/": {
+      "get": {
+        "summary": "Root welcome message",
+        "responses": {
+          "200": {
+            "description": "API welcome message",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": { "type": "string", "example": "ok" },
+                    "message": { "type": "string", "example": "Welcome to the BookLeaf API" },
+                    "timestamp": { "type": "string", "format": "date-time" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

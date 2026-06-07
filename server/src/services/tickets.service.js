@@ -19,20 +19,19 @@ const createTicket = async (ticketData) => {
     }
   }
 
-  // 2. Create Initial Ticket FAST (Non-blocking response)
-  // Save the ticket immediately so the user doesn't have to wait for the AI APIs to finish
+  
   const ticket = await ticketRepository.create({
     author_id,
-    book_id:     book_id || null,
+    book_id: book_id || null,
     subject,
     description,
-    status:      'open', 
-    ai_category: 'Processing...', // Temporary status while AI works in the background
-    ai_priority: 'Processing...',
-    ai_draft:    null,
-    ai_source:   'pending',
-    created_at:  new Date().toISOString(),
-    updated_at:  new Date().toISOString()
+    status: 'open',
+    ai_category: 'General Inquiry', // Change from 'Processing...'
+    ai_priority: 'medium',          // MUST be one of: 'critical', 'high', 'medium', 'low'
+    ai_draft: null,
+    ai_source: null,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString()
   });
 
   logger.info(`Ticket created, starting background AI processing`, { ticketId: ticket.id });
@@ -68,9 +67,9 @@ const createTicket = async (ticketData) => {
       await ticketRepository.update(ticket.id, {
         ai_category: category,
         ai_priority: priority,
-        ai_draft:    draftResult.draft,
-        ai_source:   draftResult.source,
-        updated_at:  new Date().toISOString()
+        ai_draft: draftResult.draft,
+        ai_source: draftResult.source,
+        updated_at: new Date().toISOString()
       });
 
       logger.info('Background AI processing completed', { ticketId: ticket.id, category, priority });
@@ -110,7 +109,7 @@ const getAllTickets = async (filters = {}) => {
 const updateStatus = async (ticketId, status) => {
   const ticket = await ticketRepository.findById(ticketId);
   if (!ticket) throw new AppError('Ticket not found', 404);
-  
+
   const updated = await ticketRepository.update(ticketId, { status, updated_at: new Date().toISOString() });
   logger.info(`Ticket ${ticketId} status updated to ${status}`);
   return updated;
@@ -119,7 +118,7 @@ const updateStatus = async (ticketId, status) => {
 const assignTicket = async (ticketId, adminId) => {
   const ticket = await ticketRepository.findById(ticketId);
   if (!ticket) throw new AppError('Ticket not found', 404);
-  
+
   const updated = await ticketRepository.update(ticketId, { assigned_to: adminId, updated_at: new Date().toISOString() });
   logger.info(`Ticket ${ticketId} assigned to Admin ${adminId}`);
   return updated;
@@ -128,7 +127,7 @@ const assignTicket = async (ticketId, adminId) => {
 const updateCategory = async (ticketId, category) => {
   const ticket = await ticketRepository.findById(ticketId);
   if (!ticket) throw new AppError('Ticket not found', 404);
-  
+
   const updated = await ticketRepository.update(ticketId, { admin_category: category, updated_at: new Date().toISOString() });
   logger.info(`Ticket ${ticketId} category overridden to ${category}`);
   return updated;
@@ -137,7 +136,7 @@ const updateCategory = async (ticketId, category) => {
 const updatePriority = async (ticketId, priority) => {
   const ticket = await ticketRepository.findById(ticketId);
   if (!ticket) throw new AppError('Ticket not found', 404);
-  
+
   const updated = await ticketRepository.update(ticketId, { admin_priority: priority, updated_at: new Date().toISOString() });
   logger.info(`Ticket ${ticketId} priority overridden to ${priority}`);
   return updated;
@@ -146,7 +145,7 @@ const updatePriority = async (ticketId, priority) => {
 const updateAIFields = async (ticketId, aiData) => {
   const ticket = await ticketRepository.findById(ticketId);
   if (!ticket) throw new AppError('Ticket not found', 404);
-  
+
   const updatedData = { ...aiData, updated_at: new Date().toISOString() };
   return await ticketRepository.update(ticketId, updatedData);
 };

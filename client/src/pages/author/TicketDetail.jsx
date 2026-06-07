@@ -157,7 +157,9 @@ export default function AuthorTicketDetail() {
 
     try {
       setSending(true)
-      await messagesAPI.send(id, optimistic.content)
+      const response = await messagesAPI.send(id, optimistic.content)
+      const savedMessage = response.data?.data || response.data
+      setMessages(prev => prev.map(m => m.id === optimistic.id ? savedMessage : m))
     } catch (err) {
       console.error('❌ Transmit drop error:', err)
       setMessages(prev => prev.filter(m => m.id !== optimistic.id))

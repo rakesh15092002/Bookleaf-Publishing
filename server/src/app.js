@@ -58,6 +58,13 @@ app.get('/health', (req, res) => {
   })
 })
 
+app.get("/", (req, res) => {
+  res.json({ 
+    status: 'ok', 
+    message: 'Welcome to the BookLeaf API',
+    timestamp: new Date().toISOString()
+  })
+})
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ 
