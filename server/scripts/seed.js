@@ -1,0 +1,97 @@
+// scripts/seed.js
+import { createClient } from '@supabase/supabase-js'
+import bcrypt from 'bcryptjs'
+import dotenv from 'dotenv'
+dotenv.config()
+
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+)
+
+const authorsData = [
+  { author_id: 'AUTH001', name: 'Priya Sharma',    email: 'priya.sharma@email.com',    phone: '+91-98765-43210', city: 'Mumbai',     joined_date: '2023-03-15' },
+  { author_id: 'AUTH002', name: 'Rohit Kapoor',    email: 'rohit.kapoor@email.com',    phone: '+91-87654-32109', city: 'Delhi',      joined_date: '2022-11-08' },
+  { author_id: 'AUTH003', name: 'Ananya Reddy',    email: 'ananya.reddy@email.com',    phone: '+91-76543-21098', city: 'Hyderabad',  joined_date: '2024-02-20' },
+  { author_id: 'AUTH004', name: 'Vikram Joshi',    email: 'vikram.joshi@email.com',    phone: '+91-65432-10987', city: 'Pune',       joined_date: '2023-07-12' },
+  { author_id: 'AUTH005', name: 'Meera Nair',      email: 'meera.nair@email.com',      phone: '+91-54321-09876', city: 'Kochi',      joined_date: '2023-01-05' },
+  { author_id: 'AUTH006', name: 'Arjun Malhotra',  email: 'arjun.malhotra@email.com',  phone: '+91-43210-98765', city: 'Chandigarh', joined_date: '2024-06-01' },
+  { author_id: 'AUTH007', name: 'Sneha Kulkarni',  email: 'sneha.kulkarni@email.com',  phone: '+91-32109-87654', city: 'Bangalore',  joined_date: '2022-09-18' },
+  { author_id: 'AUTH008', name: 'Farhan Sheikh',   email: 'farhan.sheikh@email.com',   phone: '+91-21098-76543', city: 'Lucknow',    joined_date: '2023-10-01' },
+  { author_id: 'AUTH009', name: 'Kavita Deshmukh', email: 'kavita.deshmukh@email.com', phone: '+91-10987-65432', city: 'Nagpur',     joined_date: '2024-04-10' },
+  { author_id: 'AUTH010', name: 'Diya Chatterjee', email: 'diya.chatterjee@email.com', phone: '+91-09876-54321', city: 'Kolkata',    joined_date: '2023-05-22' },
+]
+
+const booksData = [
+  { id:'BK001', author_id:'AUTH001', title:'Whispers of the Ganges',      isbn:'978-93-5XXXX-01-1', genre:'Literary Fiction',           publication_date:'2023-06-20', status:'Published & Live', mrp:399,  author_royalty_per_copy:35, total_copies_sold:342,  total_royalty_earned:11970, royalty_paid:8400,  royalty_pending:3570, last_royalty_payout_date:'2025-10-15', print_partner:'In-House',     available_on:['Amazon India','Flipkart','BookLeaf Store'] },
+  { id:'BK002', author_id:'AUTH001', title:'The Saffron Diaries',          isbn:'978-93-5XXXX-02-8', genre:'Non-Fiction / Memoir',       publication_date:'2024-01-10', status:'Published & Live', mrp:450,  author_royalty_per_copy:42, total_copies_sold:189,  total_royalty_earned:7938,  royalty_paid:7938,  royalty_pending:0,    last_royalty_payout_date:'2025-12-01', print_partner:'In-House',     available_on:['Amazon India','BookLeaf Store'] },
+  { id:'BK003', author_id:'AUTH002', title:'Code & Karma',                 isbn:'978-93-5XXXX-03-5', genre:'Self-Help / Technology',     publication_date:'2023-02-14', status:'Published & Live', mrp:350,  author_royalty_per_copy:30, total_copies_sold:876,  total_royalty_earned:26280, royalty_paid:21000, royalty_pending:5280, last_royalty_payout_date:'2025-09-01', print_partner:'Repro India',  available_on:['Amazon India','Flipkart','Amazon US','BookLeaf Store'] },
+  { id:'BK004', author_id:'AUTH002', title:'Startup Sutra',                isbn:'978-93-5XXXX-04-2', genre:'Business / Entrepreneurship',publication_date:'2024-05-22', status:'Published & Live', mrp:499,  author_royalty_per_copy:48, total_copies_sold:1203, total_royalty_earned:57744, royalty_paid:50000, royalty_pending:7744, last_royalty_payout_date:'2025-11-15', print_partner:'In-House',     available_on:['Amazon India','Flipkart','Amazon US','Amazon UK','BookLeaf Store'] },
+  { id:'BK005', author_id:'AUTH003', title:'Between Two Temples',          isbn:'978-93-5XXXX-05-9', genre:'Historical Fiction',         publication_date:'2024-07-05', status:'Published & Live', mrp:425,  author_royalty_per_copy:38, total_copies_sold:67,   total_royalty_earned:2546,  royalty_paid:0,     royalty_pending:2546, last_royalty_payout_date:null,         print_partner:'Epitome Books',available_on:['Amazon India','BookLeaf Store'] },
+  { id:'BK006', author_id:'AUTH004', title:'Debugging Life',               isbn:'978-93-5XXXX-06-6', genre:'Self-Help',                  publication_date:'2023-11-30', status:'Published & Live', mrp:299,  author_royalty_per_copy:25, total_copies_sold:534,  total_royalty_earned:13350, royalty_paid:10000, royalty_pending:3350, last_royalty_payout_date:'2025-08-20', print_partner:'In-House',     available_on:['Amazon India','Flipkart','BookLeaf Store'] },
+  { id:'BK007', author_id:'AUTH004', title:'The Last Monsoon',             isbn:'978-93-5XXXX-07-3', genre:'Poetry',                     publication_date:'2024-08-15', status:'Published & Live', mrp:199,  author_royalty_per_copy:15, total_copies_sold:123,  total_royalty_earned:1845,  royalty_paid:1845,  royalty_pending:0,    last_royalty_payout_date:'2025-12-01', print_partner:'In-House',     available_on:['Amazon India','BookLeaf Store'] },
+  { id:'BK008', author_id:'AUTH005', title:'Cardamom & Chaos',             isbn:'978-93-5XXXX-08-0', genre:'Contemporary Fiction',       publication_date:'2023-04-18', status:'Published & Live', mrp:375,  author_royalty_per_copy:32, total_copies_sold:445,  total_royalty_earned:14240, royalty_paid:14240, royalty_pending:0,    last_royalty_payout_date:'2025-12-01', print_partner:'Repro India',  available_on:['Amazon India','Flipkart','BookLeaf Store'] },
+  { id:'BK009', author_id:'AUTH005', title:'Letters from Lakshadweep',     isbn:'978-93-5XXXX-09-7', genre:'Travel / Non-Fiction',       publication_date:'2024-03-01', status:'Published & Live', mrp:550,  author_royalty_per_copy:55, total_copies_sold:201,  total_royalty_earned:11055, royalty_paid:8000,  royalty_pending:3055, last_royalty_payout_date:'2025-10-15', print_partner:'In-House',     available_on:['Amazon India','Amazon US','BookLeaf Store'] },
+  { id:'BK010', author_id:'AUTH006', title:'Turban Tales',                 isbn:'978-93-5XXXX-10-3', genre:'Humor / Essays',             publication_date:'2024-09-10', status:'Published & Live', mrp:325,  author_royalty_per_copy:28, total_copies_sold:88,   total_royalty_earned:2464,  royalty_paid:0,     royalty_pending:2464, last_royalty_payout_date:null,         print_partner:'In-House',     available_on:['Amazon India','BookLeaf Store'] },
+  { id:'BK011', author_id:'AUTH007', title:'The Algorithm of Love',        isbn:'978-93-5XXXX-11-0', genre:'Romance',                    publication_date:'2022-12-25', status:'Published & Live', mrp:299,  author_royalty_per_copy:25, total_copies_sold:1567, total_royalty_earned:39175, royalty_paid:35000, royalty_pending:4175, last_royalty_payout_date:'2025-11-15', print_partner:'Repro India',  available_on:['Amazon India','Flipkart','Amazon US','BookLeaf Store'] },
+  { id:'BK012', author_id:'AUTH007', title:'Ctrl+Alt+Delete My Ex',        isbn:'978-93-5XXXX-12-7', genre:'Romance / Humor',            publication_date:'2024-02-14', status:'Published & Live', mrp:350,  author_royalty_per_copy:30, total_copies_sold:723,  total_royalty_earned:21690, royalty_paid:18000, royalty_pending:3690, last_royalty_payout_date:'2025-10-15', print_partner:'In-House',     available_on:['Amazon India','Flipkart','BookLeaf Store'] },
+  { id:'BK013', author_id:'AUTH007', title:'Midnight in Mysore',           isbn:'978-93-5XXXX-13-4', genre:'Thriller',                   publication_date:null,         status:'In Production - Cover Design', mrp:null, author_royalty_per_copy:null, total_copies_sold:0, total_royalty_earned:0, royalty_paid:0, royalty_pending:0, last_royalty_payout_date:null, print_partner:null, available_on:[] },
+  { id:'BK014', author_id:'AUTH008', title:'Ghazal of the Forgotten',      isbn:'978-93-5XXXX-14-1', genre:'Poetry / Urdu Literature',   publication_date:'2024-01-26', status:'Published & Live', mrp:250,  author_royalty_per_copy:20, total_copies_sold:156,  total_royalty_earned:3120,  royalty_paid:3120,  royalty_pending:0,    last_royalty_payout_date:'2025-12-01', print_partner:'Epitome Books',available_on:['Amazon India','BookLeaf Store'] },
+  { id:'BK015', author_id:'AUTH009', title:'Raising Roots',                isbn:'978-93-5XXXX-15-8', genre:'Parenting / Non-Fiction',    publication_date:null,         status:'In Production - Typesetting',  mrp:null, author_royalty_per_copy:null, total_copies_sold:0, total_royalty_earned:0, royalty_paid:0, royalty_pending:0, last_royalty_payout_date:null, print_partner:null, available_on:[] },
+  { id:'BK016', author_id:'AUTH009', title:'The Nagpur Notebooks',         isbn:'978-93-5XXXX-16-5', genre:'Essays / Memoir',            publication_date:'2024-11-05', status:'Published & Live', mrp:299,  author_royalty_per_copy:25, total_copies_sold:34,   total_royalty_earned:850,   royalty_paid:0,     royalty_pending:850,  last_royalty_payout_date:null,         print_partner:'In-House',     available_on:['Amazon India','BookLeaf Store'] },
+  { id:'BK017', author_id:'AUTH010', title:"Durga's Daughters",            isbn:'978-93-5XXXX-17-2', genre:'Literary Fiction',           publication_date:'2023-10-15', status:'Published & Live', mrp:475,  author_royalty_per_copy:45, total_copies_sold:612,  total_royalty_earned:27540, royalty_paid:25000, royalty_pending:2540, last_royalty_payout_date:'2025-11-15', print_partner:'Repro India',  available_on:['Amazon India','Flipkart','Amazon US','BookLeaf Store'] },
+  { id:'BK018', author_id:'AUTH010', title:'Howrah Nights',                isbn:'978-93-5XXXX-18-9', genre:'Crime / Thriller',           publication_date:'2025-01-20', status:'Published & Live', mrp:399,  author_royalty_per_copy:35, total_copies_sold:45,   total_royalty_earned:1575,  royalty_paid:0,     royalty_pending:1575, last_royalty_payout_date:null,         print_partner:'In-House',     available_on:['Amazon India','BookLeaf Store'] },
+]
+
+async function seed() {
+  console.log('🌱 Seeding started...')
+
+  // 1. Hash password for all authors (default: author@123)
+  const passwordHash = await bcrypt.hash('author@123', 10)
+
+  // 2. Insert users
+  console.log('👤 Inserting authors...')
+  const usersToInsert = authorsData.map(a => ({
+    email:       a.email,
+    password_hash: passwordHash,
+    role:        'author',
+    author_id:   a.author_id,
+    name:        a.name,
+    phone:       a.phone,
+    city:        a.city,
+    joined_date: a.joined_date,
+  }))
+
+  const { error: userError } = await supabase
+    .from('users')
+    .upsert(usersToInsert, { onConflict: 'email' })
+
+  if (userError) {
+    console.error('❌ Users error:', userError.message)
+    process.exit(1)
+  }
+  console.log('✅ Authors inserted:', usersToInsert.length)
+
+  // 3. Insert books
+  console.log('📚 Inserting books...')
+  const { error: bookError } = await supabase
+    .from('books')
+    .upsert(booksData, { onConflict: 'id' })
+
+  if (bookError) {
+    console.error('❌ Books error:', bookError.message)
+    process.exit(1)
+  }
+  console.log('✅ Books inserted:', booksData.length)
+
+  console.log('\n🎉 Seeding complete!')
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+  console.log('Default password for all authors: author@123')
+  console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')
+  process.exit(0)
+}
+
+seed().catch(err => {
+  console.error('❌ Seed failed:', err)
+  process.exit(1)
+})

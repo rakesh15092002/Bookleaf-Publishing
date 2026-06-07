@@ -1,0 +1,29 @@
+# =========================
+# 1. DEPENDENCIES
+# =========================
+# Ignores Node.js modules for both client and server
+node_modules/
+
+# =========================
+# 2. SECURITY (CRITICAL)
+# =========================
+# Ignores all environment variable files to prevent API key leaks
+.env
+.env.*
+!.env.example 
+
+# =========================
+# 3. FRONTEND BUILD FILES
+# =========================
+# Ignores Vite/React build output directories
+dist/
+dist-ssr/
+
+# =========================
+# 4. LOGS & OS FILES
+# =========================
+# Ignores system-generated hidden files and error logs
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
