@@ -104,8 +104,8 @@ function BookCard({ book, onRaiseTicket }) {
         )}
         {/* 🟩 UPGRADED: Darker, Bigger Solid Button for Grid View */}
         <div className="flex justify-end pt-1">
-          <button 
-            onClick={() => onRaiseTicket(book)} 
+          <button
+            onClick={() => onRaiseTicket(book)}
             className="flex items-center gap-2 text-xs font-black uppercase tracking-wider text-white bg-[#1a56db] hover:bg-blue-700 transition-all px-4 py-2.5 rounded-xl shadow-sm hover:shadow-md"
           >
             <Ticket size={15} /> <span>Raise Ticket</span>
@@ -144,10 +144,10 @@ function BookRow({ book, onRaiseTicket }) {
       <div className="flex items-center justify-between lg:justify-end gap-4 border-t lg:border-t-0 pt-3 lg:pt-0 border-gray-100">
         <div className="hidden xl:block w-24"><RoyaltyBar paid={book.royalty_paid} total={book.total_royalty_earned} compact={true} /></div>
         <BookStatusBadge status={book.status} />
-        
+
         {/* 🟩 UPGRADED: Darker, Bigger Solid Button for Row View */}
-        <button 
-          onClick={() => onRaiseTicket(book)} 
+        <button
+          onClick={() => onRaiseTicket(book)}
           className="flex items-center gap-2 text-[11px] sm:text-xs font-black uppercase tracking-wider text-white bg-[#1a56db] hover:bg-blue-700 transition-all px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl shadow-sm hover:shadow-md shrink-0 ml-1"
           title="Raise Support Ticket"
         >
@@ -163,7 +163,7 @@ export default function AuthorBooks() {
   const [books, setBooks] = useState([])
   const [loading, setLoading] = useState(true)
   const [viewMode, setViewMode] = useState('grid')
-  
+
   // 🟩 ADVANCED TICKET MODAL STATE
   const [ticketModal, setTicketModal] = useState(null)
   const [form, setForm] = useState({ subject: '', description: '' })
@@ -215,25 +215,39 @@ export default function AuthorBooks() {
   const totalPaid = safeBooks.reduce((s, b) => s + (b.royalty_paid || 0), 0)
   const totalPending = safeBooks.reduce((s, b) => s + (b.royalty_pending || 0), 0)
 
-  if (loading) return <Layout title="Catalog Analytics"><div className="h-40 bg-gray-50 rounded-2xl animate-pulse" /></Layout>
+  if (loading) return <Layout title="Published Books"><div className="h-40 bg-gray-50 rounded-2xl animate-pulse" /></Layout>
 
   return (
-    <Layout title="Catalog Analytics">
-      
+    <Layout title="Published Books">
+
       {/* Top Summary Ribbon */}
       {safeBooks.length > 0 && (
-        <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-4">
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-            <p className="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider">Gross Revenue</p>
-            <p className="text-sm sm:text-xl font-black text-slate-800 font-mono mt-1 truncate">₹{totalEarned.toLocaleString('en-IN')}</p>
+        <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
+          <div className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-sm hover:shadow-md transition-all">
+            <p className="text-[11px] sm:text-xs text-slate-500 font-medium uppercase tracking-wide">
+              Gross Revenue
+            </p>
+            <p className="text-lg sm:text-2xl font-bold text-slate-700 mt-2 truncate">
+              ₹{totalEarned.toLocaleString('en-IN')}
+            </p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-            <p className="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider">Disbursed</p>
-            <p className="text-sm sm:text-xl font-black text-emerald-600 font-mono mt-1 truncate">₹{totalPaid.toLocaleString('en-IN')}</p>
+
+          <div className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-sm hover:shadow-md transition-all">
+            <p className="text-[11px] sm:text-xs text-slate-500 font-medium uppercase tracking-wide">
+              Disbursed
+            </p>
+            <p className="text-lg sm:text-2xl font-bold text-emerald-600 mt-2 truncate">
+              ₹{totalPaid.toLocaleString('en-IN')}
+            </p>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
-            <p className="text-[10px] sm:text-xs text-gray-400 font-bold uppercase tracking-wider">Pending Release</p>
-            <p className="text-sm sm:text-xl font-black text-rose-500 font-mono mt-1 truncate">₹{totalPending.toLocaleString('en-IN')}</p>
+
+          <div className="bg-white rounded-2xl border border-slate-100 p-4 sm:p-5 shadow-sm hover:shadow-md transition-all">
+            <p className="text-[11px] sm:text-xs text-slate-500 font-medium uppercase tracking-wide">
+              Pending Release
+            </p>
+            <p className="text-lg sm:text-2xl font-bold text-rose-500 mt-2 truncate">
+              ₹{totalPending.toLocaleString('en-IN')}
+            </p>
           </div>
         </div>
       )}
@@ -271,9 +285,9 @@ export default function AuthorBooks() {
       {ticketModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4 animate-in fade-in duration-200 overflow-y-auto">
           <div className="bg-white border border-gray-100 rounded-[24px] shadow-2xl w-full max-w-2xl my-auto transition-all scale-100 relative">
-            
+
             <button onClick={closeModal} className="absolute top-6 right-6 w-8 h-8 rounded-full bg-gray-50 hover:bg-gray-200 flex items-center justify-center text-gray-500 transition-colors z-10">
-              <X size={16}/>
+              <X size={16} />
             </button>
 
             {/* Header Block */}
@@ -301,7 +315,7 @@ export default function AuthorBooks() {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                
+
                 {/* Locked Related Book Block */}
                 <div>
                   <label className="block text-xs sm:text-sm font-bold text-slate-700 mb-2 uppercase tracking-wide">Target Asset Context</label>

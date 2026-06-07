@@ -12,11 +12,11 @@ import {
 const router = Router()
 
 // Public routes
-router.post('/register', registerValidator, validate, authController.register)
+// router.post('/register', registerValidator, validate, authController.register)
 router.post('/login',    loginValidator,    validate, authController.login)
 
 // Protected routes
 router.get('/me',              authMiddleware, authController.me)
-router.post('/change-password', authMiddleware, changePasswordValidator, validate, authController.changePassword)
+// router.post('/change-password', authMiddleware, changePasswordValidator, validate, authController.changePassword)
 
 export default router

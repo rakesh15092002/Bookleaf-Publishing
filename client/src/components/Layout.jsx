@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext' // Imported context for global state
 import { 
   Menu, 
   X, 
@@ -13,16 +14,19 @@ import {
 } from 'lucide-react'
 
 export default function Layout({ children, title, action }) {
+  const { user, logout } = useAuth() // Extracting active user data and logout function
   const [desktopOpen, setDesktopOpen] = useState(true)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
 
-  // 🟩 Dynamic Role Detection based on route mapping
-  const isAdmin = location.pathname.startsWith('/admin')
+  // 🟩 Dynamic Role Detection directly from actual user data
+  const isAdmin = user?.role?.toLowerCase() === 'admin'
   const currentRoleLabel = isAdmin ? 'Admin Control' : 'Author Portal'
-  const userLetter = isAdmin ? 'A' : 'P'
-  const userName = isAdmin ? 'System Administrator' : 'Priya Sharma'
+  
+  // 🟩 DYNAMIC NAME FIX: Deriving initials and names from actual state data
+  const userLetter = user?.name ? user?.name[0].toUpperCase() : 'U'
+  const userName = user?.name || 'Guest User'
 
   const isActive = (path) => location.pathname === path
 
@@ -30,7 +34,6 @@ export default function Layout({ children, title, action }) {
     setMobileOpen(false)
   }, [location])
 
-  // 🟩 Dynamic Navigation Array Selection based on User Privilege Role
   const authorNavigation = [
     { name: 'Dashboard', path: '/author/dashboard', icon: LayoutDashboard },
     { name: 'My Books', path: '/author/books', icon: BookOpen },
@@ -53,19 +56,10 @@ export default function Layout({ children, title, action }) {
     }
   }
 
-  // 🟩 FIXED: Functional Logout pipeline that safely wipes active sessions
-  const handleLogout = () => {
+  // 🟩 FIXED: Utilizing context logout to ensure comprehensive session wipe
+  const handleLogoutClick = () => {
     console.log('🔄 Initiating global authentication session wipe out...')
-    
-    // Auth token credentials, tokens, aur roles ko local storage se clear karo
-    localStorage.removeItem('token')
-    localStorage.removeItem('user_role')
-    localStorage.removeItem('user_session')
-    
-    // Explicit safety flush for session storage fallback vectors
-    sessionStorage.clear()
-    
-    // Redirect instantly to root landing login panel route window
+    logout() 
     navigate('/login', { replace: true })
   };
 
@@ -89,15 +83,14 @@ export default function Layout({ children, title, action }) {
       `}>
         <div className="space-y-6">
           
-          {/* SIDEBAR HEADER: Logo and Hamburger Control */}
           <div className={`flex items-center justify-between border-b border-slate-100 pb-4 ${!desktopOpen && 'lg:justify-center lg:flex-col lg:gap-3'}`}>
             <div className="flex items-center gap-3 min-w-0">
               <div className="w-9 h-9 bg-[#1a56db] rounded-xl flex items-center justify-center text-white text-lg font-black shadow-sm shrink-0">
                 B
               </div>
               <div className={`transition-opacity duration-200 ${desktopOpen ? 'block' : 'lg:hidden'}`}>
+                {/* 🟩 DESIGN TWEAK: Logo text set to soft black for professional feel */}
                 <h1 className="text-sm font-black text-slate-800 tracking-tight">BookLeaf</h1>
-                {/* 🟩 Dynamic Role Sub-label */}
                 <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">{currentRoleLabel}</p>
               </div>
             </div>
@@ -113,7 +106,6 @@ export default function Layout({ children, title, action }) {
             </button>
           </div>
 
-          {/* Nav Links Mapping Panel — Dynamic route list */}
           <nav className="space-y-1">
             {activeNavigation.map((item) => {
               const ActiveIcon = item.icon
@@ -139,14 +131,12 @@ export default function Layout({ children, title, action }) {
           </nav>
         </div>
 
-        {/* Bottom Profile Identity Context Element */}
         <div className="border-t border-slate-100 pt-4">
           <button 
-            onClick={handleLogout}
+            onClick={handleLogoutClick}
             className={`w-full flex items-center justify-between p-2 rounded-xl text-slate-500 hover:text-rose-600 hover:bg-rose-50/50 transition-colors font-bold text-xs sm:text-sm ${!desktopOpen && 'lg:justify-center lg:p-1'}`}
           >
             <div className="flex items-center gap-2.5 min-w-0">
-              {/* 🟩 Dynamic color configuration switch for Admin vs Author placeholder look */}
               <div className={`w-8 h-8 rounded-xl flex items-center justify-center font-black text-xs border shrink-0 shadow-sm transition-transform group-hover:scale-105 ${
                 isAdmin 
                   ? 'bg-purple-50 text-purple-600 border-purple-100' 
@@ -154,7 +144,8 @@ export default function Layout({ children, title, action }) {
               }`}>
                 {userLetter}
               </div>
-              <span className={`truncate max-w-[110px] text-slate-700 ${desktopOpen ? 'block' : 'lg:hidden'}`}>
+              {/* 🟩 DESIGN TWEAK: Softened user name color from text-slate-700 to text-slate-600 for better balance */}
+              <span className={`truncate max-w-[110px] text-slate-600 ${desktopOpen ? 'block' : 'lg:hidden'}`}>
                 {userName}
               </span>
             </div>
@@ -163,29 +154,30 @@ export default function Layout({ children, title, action }) {
         </div>
       </aside>
 
-      {/* 3. MAIN WORKSPACE VIEWSCREEN EXPANSION DESK */}
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+      {/* 3. MAIN WORKSPACE VIEWSCREEN */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative">
         
-        {/* Core Global Fixed Header Navbar */}
-        <header className="bg-white border-b border-slate-200/80 px-4 sm:px-6 h-16 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-3 min-w-0">
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="p-2 -ml-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-50 border border-slate-100 shadow-sm bg-white lg:hidden shrink-0"
-            >
-              <Menu size={18} />
-            </button>
-            
-            <h2 className="text-base sm:text-lg font-black text-slate-800 tracking-tight truncate pl-1">
-              {title}
-            </h2>
+        {/* Floating Mobile Toggle (Replaces Header for cleaner UI) */}
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="absolute top-4 left-4 z-30 p-2 rounded-xl text-slate-500 bg-white border border-slate-200 shadow-sm lg:hidden"
+        >
+          <Menu size={18} />
+        </button>
+
+        <main className="flex-1 overflow-y-auto p-6 lg:p-8 pt-16 lg:pt-8 bg-slate-50/50">
+          
+          {/* Main Content Area Top Section - Softened Colors for Premium Look */}
+          <div className="mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200/60 pb-5">
+            <div>
+              {/* 🟩 DESIGN TWEAK: Primary page title softened from text-slate-900 to text-slate-800 */}
+              <h2 className="text-xl sm:text-2xl font-black text-slate-700 tracking-tight">
+                {title}
+              </h2>
+            </div>
+            {action && <div className="shrink-0">{action}</div>}
           </div>
 
-          {action && <div className="shrink-0 ml-2">{action}</div>}
-        </header>
-
-        {/* Global Inner Workspace Frame Row */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-50/50">
           {children}
         </main>
       </div>
