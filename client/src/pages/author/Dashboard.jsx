@@ -152,78 +152,126 @@ export default function AuthorDashboard() {
       </div>
 
       {/* Main Stream Queue Panel Workspace */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between bg-white">
-          <h3 className="font-black text-slate-900 text-base tracking-tight flex items-center gap-2.5">
-            <Activity size={18} className="text-slate-400" />
-            <span>Recent Activity Timeline</span>
-          </h3>
+      <div className="bg-white border border-gray-200 rounded-3xl shadow-sm overflow-hidden">
+
+        {/* Header */}
+        <div className="px-6 py-5 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-white flex items-center justify-between">
+
+          <div>
+            <h3 className="flex items-center gap-2 text-slate-900 font-bold text-lg">
+              <Activity size={18} className="text-blue-600" />
+              Recent Activity
+            </h3>
+
+            <p className="text-xs text-slate-500 mt-1">
+              Latest support requests and status updates
+            </p>
+          </div>
+
           <Link
             to="/author/tickets"
-            className="text-[11px] font-extrabold text-[#1a56db] hover:text-blue-800 flex items-center gap-1 uppercase tracking-widest transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 text-xs font-semibold transition-all"
           >
-            <span>View Full Queue</span>
-            <ChevronRight size={14} strokeWidth={2.5} />
+            View All
+            <ChevronRight size={14} />
           </Link>
+
         </div>
 
+        {/* Content */}
         {recentTickets.length === 0 ? (
-          <div className="py-24 text-center max-w-md mx-auto">
-            <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-5 text-3xl shadow-sm">
-              📬
+
+          <div className="py-24 px-6 text-center">
+
+            <div className="w-20 h-20 rounded-3xl bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto mb-5">
+              <Inbox size={30} className="text-blue-600" />
             </div>
-            <p className="text-slate-900 font-black text-lg tracking-tight">No active support threads</p>
-            <p className="text-slate-500 font-medium text-sm mt-2 leading-relaxed">
-              If you require operational assistance regarding catalog metrics or payouts, open a case thread.
+
+            <h3 className="text-lg font-bold text-slate-800">
+              No Recent Activity
+            </h3>
+
+            <p className="text-sm text-slate-500 mt-2 max-w-sm mx-auto">
+              You haven't created any support tickets yet.
             </p>
+
             <Link
               to="/author/tickets/new"
-              className="mt-6 inline-block bg-slate-900 text-white text-[11px] font-extrabold tracking-widest uppercase px-5 py-3 rounded-xl hover:bg-slate-800 shadow-sm transition-colors"
+              className="inline-flex items-center gap-2 mt-6 px-5 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition-all shadow-sm"
             >
-              File Support Ticket
+              <Plus size={16} />
+              Create Ticket
             </Link>
+
           </div>
+
         ) : (
-          <div className="divide-y divide-slate-100">
+
+          <div className="divide-y divide-gray-100">
+
             {recentTickets.map((ticket) => (
+
               <Link
                 key={ticket.id}
                 to={`/author/tickets/${ticket.id}`}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-5 hover:bg-slate-50 transition-all group border-l-4 border-l-transparent hover:border-l-[#1a56db]"
+                className="group flex flex-col lg:flex-row lg:items-center justify-between gap-4 px-6 py-5 hover:bg-slate-50 transition-all border-l-4 border-l-transparent hover:border-l-blue-600"
               >
-                <div className="min-w-0 flex-1 space-y-1.5">
-                  <p className="text-[15px] font-bold text-slate-900 truncate group-hover:text-[#1a56db] transition-colors leading-snug tracking-tight">
+
+                {/* Left */}
+                <div className="min-w-0 flex-1">
+
+                  <p className="text-sm sm:text-[15px] font-semibold text-slate-900 truncate group-hover:text-blue-600 transition-colors">
                     {ticket.subject}
                   </p>
-                  <p className="text-xs text-slate-500 truncate flex items-center gap-2 font-semibold">
-                    <BookOpen size={14} className="text-slate-400" />
-                    <span>Context: {ticket.books?.title || 'General Account Level Inquiry'}</span>
-                  </p>
+
+                  <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+
+                    <BookOpen
+                      size={13}
+                      className="text-slate-400"
+                    />
+
+                    <span className="truncate">
+                      {ticket.books?.title || "General Inquiry"}
+                    </span>
+
+                  </div>
+
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-5 shrink-0 border-t border-slate-100 sm:border-none pt-3 sm:pt-0">
-                  <div className="flex items-center gap-2.5">
-                    {ticket.ai_category && (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-purple-50 border border-purple-100/50 text-purple-700 text-[10px] font-extrabold tracking-widest uppercase rounded-lg shadow-sm">
-                        <Bot size={12} className="text-purple-500" />
-                        <span>{ticket.ai_category}</span>
-                      </span>
-                    )}
-                    <PriorityBadge priority={ticket.admin_priority || ticket.ai_priority} />
-                    <StatusBadge status={ticket.status} />
-                  </div>
+                {/* Right */}
+                <div className="flex flex-wrap items-center gap-3 pt-3 lg:pt-0 border-t border-gray-100 lg:border-none">
 
-                  <div className="flex items-center gap-3">
-                    <span className="text-[11px] font-bold tracking-widest uppercase text-slate-400 hidden md:block">
-                      {ticket.updated_at || ticket.created_at
-                        ? new Date(ticket.updated_at || ticket.created_at).toLocaleDateString('en-IN', {
-                          day: 'numeric',
-                          month: 'short'
-                        })
-                        : '—'}
+                  {ticket.ai_category && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 text-[11px] font-semibold border border-purple-100">
+                      <Bot size={12} />
+                      {ticket.ai_category}
                     </span>
-                    <ArrowRight size={16} className="text-slate-300 group-hover:text-[#1a56db] group-hover:translate-x-1 transition-all hidden sm:block" />
-                  </div>
+                  )}
+
+                  <PriorityBadge
+                    priority={ticket.admin_priority || ticket.ai_priority}
+                  />
+
+                  <StatusBadge
+                    status={ticket.status}
+                  />
+
+                  <span className="text-xs text-slate-500 bg-slate-100 px-3 py-1 rounded-full font-medium">
+                    {ticket.updated_at || ticket.created_at
+                      ? new Date(
+                        ticket.updated_at || ticket.created_at
+                      ).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                      })
+                      : "—"}
+                  </span>
+
+                  <ArrowRight
+                    size={16}
+                    className="text-slate-300 group-hover:text-blue-600 group-hover:translate-x-1 transition-all hidden sm:block"
+                  />
                 </div>
               </Link>
             ))}

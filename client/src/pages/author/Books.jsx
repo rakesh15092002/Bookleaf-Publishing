@@ -254,13 +254,41 @@ export default function AuthorBooks() {
 
       {/* Layout Control Trays */}
       {safeBooks.length > 0 && (
-        <div className="flex justify-between items-center mb-4 px-1">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider flex items-center gap-1">
-            <Layers size={13} /> <span>Indexed Titles ({safeBooks.length})</span>
-          </p>
-          <div className="bg-gray-100 p-1 rounded-xl flex items-center gap-1 border border-gray-200/40">
-            <button onClick={() => setViewMode('grid')} className={`p-1.5 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-[#1a56db] shadow-sm' : 'text-gray-400 hover:text-slate-700'}`}><Grid size={15} /></button>
-            <button onClick={() => setViewMode('list')} className={`p-1.5 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-[#1a56db] shadow-sm' : 'text-gray-400 hover:text-slate-700'}`}><List size={15} /></button>
+        <div className="flex items-center justify-between mb-6">
+
+          <div>
+            <p className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Layers size={16} className="text-blue-600" />
+              Indexed Titles
+            </p>
+
+            <p className="text-xs text-slate-500 mt-1">
+              {safeBooks.length} books available
+            </p>
+          </div>
+
+          <div className="bg-white border border-gray-200 rounded-2xl p-1 shadow-sm flex items-center gap-1">
+
+            <button
+              onClick={() => setViewMode("grid")}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${viewMode === "grid"
+                ? "bg-blue-600 text-white shadow-md"
+                : "text-slate-500 hover:bg-slate-50"
+                }`}
+            >
+              <Grid size={16} />
+            </button>
+
+            <button
+              onClick={() => setViewMode("list")}
+              className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${viewMode === "list"
+                ? "bg-blue-600 text-white shadow-md"
+                : "text-slate-500 hover:bg-slate-50"
+                }`}
+            >
+              <List size={16} />
+            </button>
+
           </div>
         </div>
       )}

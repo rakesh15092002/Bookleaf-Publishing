@@ -128,7 +128,7 @@ export default function AuthorTickets() {
       }
     >
       {/* Realtime Replication Status Bar */}
-      <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
+      {/* <div className="mb-6 flex items-center justify-between bg-white rounded-2xl border border-gray-100 p-4 shadow-sm">
         <div className="flex items-center gap-3">
           <div className={`w-2.5 h-2.5 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`} />
           <div>
@@ -142,141 +142,168 @@ export default function AuthorTickets() {
           <Activity size={12} className="text-gray-400" />
           <span>Active Feed</span>
         </div>
-      </div>
+      </div> */}
 
-      {/* Control Filters Tray Component with Search Box */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 sm:p-5 mb-6 space-y-4">
-        <div className="relative">
-          <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+      {/* Filter & Search Section */}
+      <div className="bg-white rounded-3xl border border-gray-200 shadow-sm p-5 mb-6">
+        {/* Search Box */}
+        <div className="relative mb-5">
+          <Search
+            size={18}
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+          />
+
           <input
             type="text"
-            placeholder="Search through past case descriptions or AI classification types..."
+            placeholder="Search cases, AI classifications, keywords..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-gray-50/60 text-gray-800 placeholder-gray-400 border border-gray-100 rounded-xl pl-11 pr-4 py-2.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-[#1a56db] focus:bg-white transition-all font-medium"
+            className="w-full h-12 bg-gray-50 border border-gray-200 rounded-2xl pl-12 pr-4 text-sm text-gray-700 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all"
           />
         </div>
 
-        {/* Modern Horizontal Scrollable Filter Tabs Container */}
-        <div className="overflow-x-auto -mx-4 px-4 sm:mx-0 sm:px-0 scrollbar-none">
-          <div className="flex gap-1.5 min-w-max bg-gray-50 p-1.5 rounded-xl border border-gray-100/50">
+        {/* Filters */}
+        <div className="overflow-x-auto scrollbar-none">
+          <div className="flex gap-2 min-w-max">
             {FILTERS.map((f) => {
               const count =
-                f.value === 'all'
+                f.value === "all"
                   ? safeTickets.length
-                  : safeTickets.filter((t) => t.status === f.value).length
+                  : safeTickets.filter((t) => t.status === f.value).length;
 
-              const isActive = activeFilter === f.value
+              const isActive = activeFilter === f.value;
 
               return (
                 <button
                   key={f.value}
                   onClick={() => setActiveFilter(f.value)}
-                  className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tracking-wide transition-all ${isActive
-                      ? 'bg-white text-[#1a56db] shadow-sm border border-gray-200/50'
-                      : 'text-gray-500 hover:text-[#1a56db] hover:bg-white/40'
-                    }`}
+                  className={`group flex items-center gap-2 px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 whitespace-nowrap
+              ${isActive
+                      ? "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md scale-[1.02]"
+                      : "bg-gray-50 text-gray-600 hover:bg-blue-50 hover:text-blue-600 border border-transparent hover:border-blue-100"
+                    }
+            `}
                 >
-                  {f.label}
-                  <span className={`ml-1.5 px-1.5 py-0.5 rounded text-[10px] font-mono ${isActive ? 'bg-blue-50 text-blue-600' : 'bg-gray-200 text-gray-500'}`}>
-                    ({count})
+                  <span>{f.label}</span>
+
+                  <span
+                    className={`px-2 py-0.5 rounded-full text-[11px] font-bold
+                ${isActive
+                        ? "bg-white/20 text-white"
+                        : "bg-gray-200 text-gray-600 group-hover:bg-blue-100 group-hover:text-blue-600"
+                      }
+              `}
+                  >
+                    {count}
                   </span>
                 </button>
-              )
+              );
             })}
           </div>
         </div>
       </div>
 
-      {/* Main Responsive Ticket Grid Desk */}
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm divide-y divide-gray-50">
-        {sorted.length === 0 ? (
-          <div className="py-20 text-center max-w-sm mx-auto px-4 flex flex-col items-center">
-            <div className="w-16 h-16 bg-blue-50 border border-blue-100 rounded-2xl flex items-center justify-center mb-4">
-              <Inbox className="text-[#1a56db]" size={26} />
+      <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+  {sorted.length === 0 ? (
+    <div className="flex flex-col items-center justify-center py-24 px-6 text-center">
+      <div className="w-20 h-20 rounded-3xl bg-blue-50 border border-blue-100 flex items-center justify-center mb-5">
+        <Inbox size={32} className="text-blue-600" />
+      </div>
+
+      <h3 className="text-lg font-bold text-slate-800">
+        No Support Tickets Found
+      </h3>
+
+      <p className="mt-2 text-sm text-slate-500 max-w-md leading-relaxed">
+        {activeFilter === "all"
+          ? "No tickets have been created yet. Start by creating your first support request."
+          : `No tickets match the selected "${activeFilter.replace(
+              "_",
+              " "
+            )}" filter.`}
+      </p>
+
+      {activeFilter === "all" && (
+        <Link
+          to="/author/tickets/new"
+          className="mt-6 inline-flex items-center gap-2 px-5 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-semibold shadow-md transition-all"
+        >
+          <Plus size={16} />
+          Create Ticket
+        </Link>
+      )}
+    </div>
+  ) : (
+    <div className="p-3 space-y-3">
+      {sorted.map((ticket) => {
+        const priority = ticket.admin_priority || ticket.ai_priority;
+
+        return (
+          <Link
+            key={ticket.id}
+            to={`/author/tickets/${ticket.id}`}
+            className="group flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-5 rounded-2xl border border-gray-100 bg-white hover:border-blue-200 hover:bg-blue-50/30 hover:shadow-md transition-all duration-300"
+          >
+            {/* Left Side */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-start gap-3">
+                <div className="hidden sm:flex w-10 h-10 rounded-xl bg-blue-50 items-center justify-center border border-blue-100">
+                  <BookOpen size={18} className="text-blue-600" />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-semibold text-gray-800 truncate group-hover:text-blue-600 transition-colors">
+                    {ticket.subject}
+                  </h3>
+
+                  <div className="mt-2 flex flex-wrap items-center gap-4 text-xs text-gray-500">
+                    <span className="flex items-center gap-1.5">
+                      <BookOpen size={13} />
+                      {ticket.books?.title || "General Account"}
+                    </span>
+
+                    <span className="flex items-center gap-1.5">
+                      <Calendar size={13} />
+                      {new Date(ticket.created_at).toLocaleDateString(
+                        "en-IN",
+                        {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        }
+                      )}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <h5 className="text-sm font-bold text-slate-800 uppercase tracking-wide">
-              No Support Tickets Found
-            </h5>
-            <p className="text-xs text-slate-400 mt-1.5 leading-relaxed font-medium max-w-xs mx-auto">
-              {activeFilter === 'all'
-                ? 'There are currently no support tickets recorded under this author account configuration.'
-                : `There are currently no records matching the "${activeFilter.replace('_', ' ')}" status criteria.`}
-            </p>
+            {/* Right Side */}
+            <div className="flex items-center justify-between lg:justify-end gap-3 flex-wrap">
+              {ticket.ai_category && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-100 text-xs font-semibold">
+                  <Bot size={12} />
+                  {ticket.ai_category}
+                </span>
+              )}
 
-            {activeFilter === 'all' && (
-              <Link
-                to="/author/tickets/new"
-                className="mt-5 inline-flex items-center gap-2 bg-[#1a56db] text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-xl hover:bg-blue-700 shadow-sm transition-all"
-              >
-                <Plus size={14} />
-                <span>Create First Ticket</span>
-              </Link>
-            )}
-          </div>
-        ) : (
-          <div className="divide-y divide-gray-50">
-            {sorted.map((ticket) => {
-              const priority = ticket.admin_priority || ticket.ai_priority
+              <PriorityBadge priority={priority} />
 
-              return (
-                <Link
-                  key={ticket.id}
-                  to={`/author/tickets/${ticket.id}`}
-                  className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 hover:bg-gray-50/40 transition-all transform hover:-translate-y-0.5 group border-l-4 border-l-transparent hover:border-l-[#1a56db]"
-                >
-                  {/* Left Metadata Block Layout */}
-                  <div className="min-w-0 flex-1 space-y-2">
-                    <p className="text-sm font-bold text-gray-800 truncate group-hover:text-[#1a56db] transition-colors leading-snug">
-                      {ticket.subject}
-                    </p>
+              <StatusBadge status={ticket.status} />
 
-                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-gray-400 font-semibold">
-                      <div className="flex items-center gap-1.5">
-                        <BookOpen size={13} className="text-gray-300" />
-                        <span className="truncate max-w-[150px]">
-                          {ticket.books?.title || 'General Account Level'}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 font-medium">
-                        <Calendar size={13} className="text-gray-300" />
-                        <span>
-                          {new Date(ticket.created_at).toLocaleDateString('en-IN', {
-                            day: 'numeric',
-                            month: 'short',
-                            year: 'numeric',
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Status Control Trait Area */}
-                  <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-3 sm:pt-0 border-t border-gray-50 sm:border-transparent">
-                    <div className="flex items-center gap-2">
-                      {ticket.ai_category && (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-purple-50 border border-purple-100 text-purple-700 text-[10px] font-extrabold tracking-wide uppercase rounded-md shadow-sm">
-                          <Bot size={11} className="text-purple-400" />
-                          <span>{ticket.ai_category}</span>
-                        </span>
-                      )}
-                      <PriorityBadge priority={priority} />
-                      <StatusBadge status={ticket.status} />
-                    </div>
-
-                    <ChevronRight
-                      size={16}
-                      className="text-gray-300 group-hover:text-[#1a56db] group-hover:translate-x-0.5 transition-all hidden sm:block"
-                    />
-                  </div>
-                </Link>
-              )
-            })}
-          </div>
-        )}
-      </div>
+              <div className="hidden lg:flex items-center justify-center w-9 h-9 rounded-xl bg-gray-50 group-hover:bg-blue-100 transition-all">
+                <ChevronRight
+                  size={18}
+                  className="text-gray-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all"
+                />
+              </div>
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  )}
+</div>
     </Layout>
   )
 }
