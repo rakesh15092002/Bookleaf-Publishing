@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { BookOpen, Ticket, IndianRupee, Package, Bot, ChevronRight, Activity, ArrowRight } from 'lucide-react'
+import { BookOpen, Ticket, IndianRupee, Package, Bot, ChevronRight, Activity, ArrowRight, Inbox, Plus } from 'lucide-react'
 
 import Layout from '../../components/Layout'
 import StatusBadge from '../../components/StatusBadge'
