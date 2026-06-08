@@ -67,7 +67,7 @@ npm run dev
 
 ---
 
-## Architecture Overview  🏗️ 
+## Architecture Overview 
 
 ### High-Level Architecture
 
@@ -148,7 +148,7 @@ npm run dev
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer        | Technology | Purpose |
 |-------------|-----------|---------|
@@ -170,7 +170,7 @@ npm run dev
 
 ---
 
-## ⚙️ Setup Instructions
+## Setup Instructions
 
 ### Step 1: Environment Configuration
 
@@ -246,7 +246,7 @@ This creates:
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 BookLeaf/
@@ -395,7 +395,7 @@ BookLeaf/
 
 ---
 
-## 🤖 AI Integration & RAG System
+## AI Integration & RAG System
 
 ### WorkFlow
 <img width="2836" height="3553" alt="Untitled-2026-04-23-0905" src="https://github.com/user-attachments/assets/5e9d126b-4664-42e3-a47b-f7857bca6dca" />
@@ -528,7 +528,7 @@ Title: "Whispers of the Ganges" | Pending: ₹3,570
 
 ---
 
-## 📊 API Documentation
+## API Documentation
 
 ### Base URL
 ```
@@ -606,7 +606,7 @@ See detailed API docs at:
 
 ---
 
-## 🔐 Seeded Credentials
+## Seeded Credentials
 
 ### Default Admin Account
 
@@ -665,7 +665,7 @@ npm run create-admin
 
 ---
 
-## 💾 Database Schema
+## Database Schema
 
 ### Users Table
 
@@ -771,7 +771,7 @@ CREATE TABLE rag_analytics (
 
 ---
 
-## 🚨 Error Handling & Rate Limiting
+## Error Handling & Rate Limiting
 
 ### Error Handling
 
@@ -822,7 +822,7 @@ const apiLimiter = rateLimit({
 
 ---
 
-## 💰 Cost Management Strategy
+## Cost Management Strategy
 
 ### Challenge
 LLM API calls are expensive. Full knowledge base = 2,850+ tokens per request.
@@ -878,7 +878,7 @@ Access at: `GET /api/rag/analytics`
 
 ---
 
-## ⚠️ Known Limitations
+## Known Limitations
 
 ### 1. **TF-IDF vs Vector Embeddings**
 - **Current**: TF-IDF (keyword-based semantic search)
@@ -921,7 +921,7 @@ Access at: `GET /api/rag/analytics`
 
 ---
 
-## 🚀 Future Improvements
+## Future Improvements
 
 ### High Priority (Production-Ready)
 
@@ -995,7 +995,7 @@ Access at: `GET /api/rag/analytics`
 
 ---
 
-## 🔧 Development Tips
+## Development Tips
 
 ### Running in Development Mode
 
@@ -1047,7 +1047,7 @@ console.log(response);
 
 ---
 
-## 📞 Support & Troubleshooting
+## Support & Troubleshooting
 
 ### Common Issues
 
@@ -1078,13 +1078,13 @@ Solution: Run SUPABASE_REALTIME_SETUP.sql in Supabase editor
 
 ---
 
-## 📜 License
+## License
 
 ISC
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Groq**: Fast, affordable LLM inference
 - **Supabase**: PostgreSQL + Auth + Realtime magic
