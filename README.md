@@ -397,6 +397,11 @@ BookLeaf/
 
 ## 🤖 AI Integration & RAG System
 
+### WorkFlow
+<img width="2836" height="3553" alt="Untitled-2026-04-23-0905" src="https://github.com/user-attachments/assets/5e9d126b-4664-42e3-a47b-f7857bca6dca" />
+
+
+
 ### Overview
 
 The application uses **Retrieval-Augmented Generation (RAG)** to generate contextually accurate support responses while minimizing API costs.
