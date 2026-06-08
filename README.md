@@ -67,7 +67,7 @@ npm run dev
 
 ---
 
-## 🏗️ Architecture Overview
+## Architecture Overview  🏗️ 
 
 ### High-Level Architecture
 
