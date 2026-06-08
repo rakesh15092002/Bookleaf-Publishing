@@ -528,26 +528,36 @@ Title: "Whispers of the Ganges" | Pending: ₹3,570
 
 ---
 
-## API Documentation
+## 📊 API Documentation
 
-### Base URL
+> [!IMPORTANT]
+> 📬 **[Open Postman Collection](https://www.postman.com/workspace/My-Workspace~3fe61fd1-0725-4883-85ef-873f7c4c695f/collection/40693857-c16ff13f-9b4a-4c4f-bcd1-606b7b0e8515)** — Import & test all endpoints instantly, no setup needed
+>
+> 📄 Local: `server/docs/api-overview.md` &nbsp;|&nbsp; 📦 OpenAPI JSON: `server/openapi.json`
+
+---
+
+### 🔗 Base URL
+
 ```
 http://localhost:3000/api
 ```
 
-### Authentication
+### 🔐 Authentication
 
-All protected endpoints require JWT token in header:
+All protected endpoints require a JWT token in the header:
 
 ```bash
 Authorization: Bearer <jwt_token>
 ```
 
-### Endpoints Summary
+---
+
+### 📋 Endpoints Summary
 
 | Method | Endpoint | Auth | Role | Purpose |
 |--------|----------|------|------|---------|
-| **POST** | `/auth/login` | ❌ | - | User login |
+| **POST** | `/auth/login` | ❌ | — | User login |
 | **GET** | `/auth/me` | ✅ | Any | Get current user |
 | **GET** | `/tickets` | ✅ | Any | List tickets |
 | **POST** | `/tickets` | ✅ | author | Create ticket |
@@ -561,7 +571,11 @@ Authorization: Bearer <jwt_token>
 | **GET** | `/rag/analytics` | ✅ | admin | RAG performance |
 | **GET** | `/rag/statistics` | ✅ | admin | KB statistics |
 
-### Example: Create Ticket
+---
+
+### 💡 Examples
+
+#### Create Ticket
 
 ```bash
 curl -X POST http://localhost:3000/api/tickets \
@@ -569,20 +583,23 @@ curl -X POST http://localhost:3000/api/tickets \
   -H "Content-Type: application/json" \
   -d '{
     "subject": "ISBN allocation delay",
-    "description": "My book is ready but ISBN hasn't been assigned",
+    "description": "My book is ready but ISBN hasnt been assigned",
     "category": "isbn"
   }'
 ```
 
-### Example: Generate Draft Response
+#### Generate Draft Response
 
 ```bash
 curl -X POST http://localhost:3000/api/ai/draft/ticket-123 \
   -H "Authorization: Bearer <token>" \
   -H "Content-Type: application/json" \
   -d '{}'
+```
 
-# Response
+**✅ Response:**
+
+```json
 {
   "success": true,
   "data": {
@@ -596,13 +613,6 @@ curl -X POST http://localhost:3000/api/ai/draft/ticket-123 \
   }
 }
 ```
-
-### Full API Documentation
-
-See detailed API docs at:
-- **OpenAPI/Swagger**: [Postman Collection](https://www.postman.com/workspace/My-Workspace~3fe61fd1-0725-4883-85ef-873f7c4c695f/collection/40693857-c16ff13f-9b4a-4c4f-bcd1-606b7b0e8515)
-- **Local**: `server/docs/api-overview.md`
-- **OpenAPI JSON**: `server/openapi.json`
 
 ---
 
