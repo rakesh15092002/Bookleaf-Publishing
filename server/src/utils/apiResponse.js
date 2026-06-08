@@ -27,10 +27,20 @@ const notFoundResponse = (res, message = 'Not found') => {
   return errorResponse(res, message, 404)
 }
 
+const apiResponse = (res, statusCode = 200, message = 'Success', data = null) => {
+  const success = statusCode >= 200 && statusCode < 300
+  return res.status(statusCode).json({
+    success,
+    message,
+    ...(data !== null && { data })
+  })
+}
+
 export { 
   successResponse, 
   errorResponse,
   createdResponse,
   forbiddenResponse,
-  notFoundResponse
+  notFoundResponse,
+  apiResponse
 }

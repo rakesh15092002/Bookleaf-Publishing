@@ -33,6 +33,17 @@ const create = async (userData) => {
   return data;
 };
 
+
+const findByRole = async (role) => {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('role', role); // Database mein 'role' column hona chahiye
+
+  if (error) throw error;
+  return data;
+};
+
 const update = async (id, updateData) => {
   const { data, error } = await supabase
     .from('users')
@@ -45,4 +56,4 @@ const update = async (id, updateData) => {
   return data;
 };
 
-export default { findByEmail, findById, create, update };
+export default { findByEmail, findById, create, findByRole, update };

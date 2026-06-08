@@ -17,8 +17,8 @@ const authorLinks = [
 ]
 
 const adminLinks = [
-  { to: '/admin/dashboard', label: 'Control Center', icon: LayoutDashboard },
-  { to: '/admin/tickets', label: 'Global Tickets', icon: Ticket },
+  { to: '/admin/dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
+  { to: '/admin/tickets', label: 'Admin Tickets', icon: Ticket },
   { to: '/admin/ai-agents', label: 'AI Co-Pilot Desk', icon: Bot },
   { to: '/admin/authors', label: 'Author Registry', icon: Users },
   { to: '/admin/knowledge', label: 'Knowledge Base', icon: BookOpen },

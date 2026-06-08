@@ -41,9 +41,12 @@ export default function Layout({ children, title, action }) {
   ]
 
   const adminNavigation = [
-    { name: 'Control Center', path: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Global Tickets', path: '/admin/tickets', icon: Ticket },
-    { name: 'System Logs', path: '/admin/logs', icon: Terminal },
+    { name: 'Admin Dashboard', path: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Ticket Queue', path: '/admin/tickets', icon: Ticket },
+    { name: 'Author Registry', path: '/admin/authors', icon: Users },
+    // 
+    {name:'Settings', path:'/admin/settings', icon:Settings},
+    
   ]
 
   const activeNavigation = isAdmin ? adminNavigation : authorNavigation

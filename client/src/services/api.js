@@ -61,5 +61,9 @@ export const notesAPI = {
   getAll: (ticketId) => api.get(`/api/tickets/${ticketId}/notes`),
   add: (ticketId, content) => api.post(`/api/tickets/${ticketId}/notes`, { content })
 }
-
+// ─── Admin Author Registry ─────────────────────────────
+export const adminAPI = {
+  getAuthors: () => api.get('/api/admin/authors'),
+  getAuthorById: (id) => api.get(`/api/admin/authors/${id}`)
+}
 export default api

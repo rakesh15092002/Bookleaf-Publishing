@@ -10,6 +10,7 @@ import ticketsRoutes  from './routes/tickets.routes.js'
 import messagesRoutes from './routes/messages.routes.js'
 import notesRoutes    from './routes/notes.routes.js'
 import aiRoutes       from './routes/ai.routes.js'
+import authorRoutes   from './routes/authors.routes.js'  // ✅ fix
 
 import { errorMiddleware } from './middleware/error.middleware.js'
 import { apiLimiter }      from './middleware/rateLimit.middleware.js'
@@ -45,9 +46,10 @@ app.use('/api', apiLimiter)
 app.use('/api/auth',     authRoutes)
 app.use('/api/books',    booksRoutes)
 app.use('/api/tickets',  ticketsRoutes)
-app.use('/api/tickets/:ticketId/messages', messagesRoutes)  // ✅ fix
-app.use('/api/tickets/:ticketId/notes',    notesRoutes)     // ✅ fix
+app.use('/api/tickets/:ticketId/messages', messagesRoutes)
+app.use('/api/tickets/:ticketId/notes',    notesRoutes)
 app.use('/api/ai',       aiRoutes)
+app.use('/api/admin/authors', authorRoutes)
 
 // Health check
 app.get('/health', (req, res) => {

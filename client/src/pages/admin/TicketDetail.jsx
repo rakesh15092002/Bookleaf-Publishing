@@ -28,13 +28,13 @@ function AIDraftBox({ ticket, handleUseDraft, draftCopied }) {
   return (
     /* 🟩 UPGRADED: Absolute luxury moving gradient border box layer padding setup */
     <div className="p-[2px] bg-gradient-to-r from-purple-600 via-indigo-500 via-fuchsia-500 to-purple-600 rounded-2xl animate-ai-gradient-glow shadow-[0_0_18px_rgba(168,85,247,0.22)] transition-all duration-300 hover:shadow-[0_0_24px_rgba(168,85,247,0.35)] relative overflow-hidden group">
-      
+
       {/* Internal layout surface background structure masking */}
       <div className="bg-gradient-to-br from-purple-50/95 to-indigo-50/60 rounded-[14px] p-4.5 relative overflow-hidden h-full w-full">
         <div className="absolute -top-6 -right-6 p-4 opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-300">
           <Sparkles size={60} className="text-purple-600" />
         </div>
-        
+
         <div className="flex items-center justify-between gap-2 mb-2.5 relative z-10">
           <div className="flex items-center gap-1.5">
             <div className="w-6 h-6 rounded-lg bg-purple-600 flex items-center justify-center text-white shadow-sm shrink-0 shadow-purple-200">
@@ -50,11 +50,10 @@ function AIDraftBox({ ticket, handleUseDraft, draftCopied }) {
           </div>
           <button
             onClick={handleUseDraft}
-            className={`px-3 py-1 text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-sm shrink-0 ${
-              draftCopied ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-100' : 'bg-purple-600 hover:bg-purple-700 text-white shadow-sm shadow-purple-200 hover:scale-[1.02]'
-            }`}
+            className={`px-3 py-1 text-xs font-black uppercase tracking-wider rounded-xl transition-all shadow-sm shrink-0 ${draftCopied ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-100' : 'bg-purple-600 hover:bg-purple-700 text-white shadow-sm shadow-purple-200 hover:scale-[1.02]'
+              }`}
           >
-            {draftCopied ? 'Copied' : 'Deploy'}
+            {draftCopied ? 'Copied' : 'Use Draft'}
           </button>
         </div>
         <div className="max-h-40 overflow-y-auto text-xs text-purple-950 leading-relaxed bg-white/90 border border-purple-200/60 rounded-xl p-3.5 shadow-inner whitespace-pre-wrap font-medium custom-scrollbar">
@@ -82,7 +81,7 @@ function TicketMetaSidebar({ ticket, updating, handleStatusChange, handlePriorit
   const [categoryOpen, setCategoryOpen] = useState(false)
 
   const sidebarRef = useRef(null)
-  
+
   const currentStatus = ticket.status || 'open'
   const currentPriority = ticket.admin_priority || ticket.ai_priority || 'medium'
   const currentCategory = ticket.admin_category || ticket.ai_category || 'General Query'
@@ -124,12 +123,12 @@ function TicketMetaSidebar({ ticket, updating, handleStatusChange, handlePriorit
 
   return (
     <div className="w-full space-y-4" ref={sidebarRef}>
-      
+
       {/* State Mutator Desk Block */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm space-y-5">
-        <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest flex items-center gap-1.5 border-b border-gray-50 pb-2">
-          <Shield size={14} className="text-gray-400" />
-          <span>State Mutator Desk</span>
+      <div className="bg-white rounded-2xl  border border-gray-200 p-5 shadow-sm space-y-5">
+        <p className="flex items-center gap-2 px-4 py-3 rounded-lg bg-emerald-600 text-white text-xs font-black uppercase tracking-widest shadow-lg shadow-emerald-200">
+          <Shield size={16} className="text-white" />
+          <span>Update Ticket</span>
         </p>
 
         {/* System Status Dropdown */}
@@ -246,15 +245,15 @@ function TicketMetaSidebar({ ticket, updating, handleStatusChange, handlePriorit
           <div className="absolute top-3 right-3 opacity-20 text-purple-500 animate-pulse">
             <Sparkles size={14} />
           </div>
-          
+
           <p className="text-[11px] font-black text-purple-900 uppercase tracking-widest pb-1 flex items-center gap-1.5 border-b border-purple-50">
             <AlertCircle size={13} className="text-purple-500" />
             <span>Metadata & AI Analytics</span>
           </p>
-          
+
           <InfoRow label="Active State" value={<StatusBadge status={ticket.status} />} />
           <InfoRow label="Merged Priority" value={<PriorityBadge priority={priority} />} />
-          
+
           <InfoRow
             label="AI Engine Tag"
             value={
@@ -321,13 +320,12 @@ function MessageBubble({ message }) {
 
   return (
     <div className={`flex w-full mb-3.5 ${isAdmin ? 'justify-end' : 'justify-start'}`}>
-      <div className={`max-w-[85%] sm:max-w-[75%] px-4 py-3 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm transition-all ${
-        isInternal
+      <div className={`max-w-[85%] sm:max-w-[75%] px-4 py-3 rounded-2xl text-xs sm:text-sm leading-relaxed shadow-sm transition-all ${isInternal
           ? 'bg-amber-50/90 border border-amber-200/70 text-amber-900 rounded-br-none'
           : isAdmin
-          ? 'bg-[#1a56db] text-white rounded-br-none font-medium'
-          : 'bg-slate-100 border border-slate-200/40 text-slate-800 rounded-bl-none font-medium'
-      }`}>
+            ? 'bg-[#1a56db] text-white rounded-br-none font-medium'
+            : 'bg-slate-100 border border-slate-200/40 text-slate-800 rounded-bl-none font-medium'
+        }`}>
         {isInternal && (
           <div className="flex items-center gap-1 text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1">
             <EyeOff size={11} />
@@ -335,9 +333,8 @@ function MessageBubble({ message }) {
           </div>
         )}
         <p className="whitespace-pre-wrap break-words">{message.content}</p>
-        <div className={`text-[10px] mt-1.5 font-mono text-right font-bold flex items-center justify-end gap-1 ${
-          isInternal ? 'text-amber-500' : isAdmin ? 'text-blue-200' : 'text-gray-400'
-        }`}>
+        <div className={`text-[10px] mt-1.5 font-mono text-right font-bold flex items-center justify-end gap-1 ${isInternal ? 'text-amber-500' : isAdmin ? 'text-blue-200' : 'text-gray-400'
+          }`}>
           <span>{isAdmin ? '👤 Admin' : '✍️ Author'}</span>
           <span>•</span>
           <span>
@@ -461,8 +458,8 @@ export default function AdminTicketDetail() {
   if (!ticket) return <Layout title="Operational Desk"><div className="text-center py-20 text-slate-800 font-bold">Operational missing</div></Layout>
 
   return (
-    <Layout 
-      title="Operational Control Tower"
+    <Layout
+      title="Ticket Management Console"
       action={
         <button onClick={() => navigate('/admin/tickets')} className="inline-flex items-center gap-1.5 bg-white border border-gray-200 text-slate-600 text-xs font-bold uppercase px-3.5 py-2 rounded-xl hover:bg-gray-50 transition shadow-sm">
           <ArrowLeft size={14} /><span>Back to Tickets</span>
@@ -473,17 +470,13 @@ export default function AdminTicketDetail() {
       <style>{styleInject}</style>
 
       <div className="flex flex-col lg:flex-row gap-5 items-start">
-        
+
         {/* LEFT CHAT AREA CONTAINER */}
         <div className="w-full flex-1 bg-white rounded-2xl border border-gray-200 flex flex-col h-[calc(100vh-160px)] min-h-[500px] shadow-sm overflow-hidden">
           <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between bg-slate-50/40">
             <div className="min-w-0">
               <h3 className="font-black text-slate-800 text-sm sm:text-base truncate tracking-tight">{ticket.subject}</h3>
               <p className="text-[11px] text-slate-400 font-bold truncate mt-0.5 flex items-center gap-1"><BookOpen size={12} /><span>Context: {ticket.books?.title || 'Account Parameter'}</span></p>
-            </div>
-            <div className="flex items-center gap-2 bg-white border border-gray-100 px-3 py-1.5 rounded-xl shrink-0 shadow-sm">
-              <div className={`w-2 h-2 rounded-full ${isOnline ? 'bg-emerald-500 animate-pulse' : 'bg-amber-400'}`} />
-              <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">{isOnline ? 'Socket Live' : 'Reconnecting'}</span>
             </div>
           </div>
 

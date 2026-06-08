@@ -11,6 +11,8 @@ import AuthorTicketDetail from './pages/author/TicketDetail'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminTickets from './pages/admin/Tickets'
 import AdminTicketDetail from './pages/admin/TicketDetail'
+import AuthorRegistry from './pages/admin/AuthorRegistry'
+import AuthorDetail from './pages/admin/AuthorDetail'
 
 // ─── Protected Route ────────────────────────────────────
 function ProtectedRoute({ children, allowedRole }) {
@@ -76,6 +78,13 @@ function AppRoutes() {
       } />
       <Route path="/admin/tickets/:id" element={
         <ProtectedRoute allowedRole="admin"><AdminTicketDetail /></ProtectedRoute>
+      } />
+
+      <Route path="/admin/authors" element={
+        <ProtectedRoute allowedRole="admin"><AuthorRegistry /></ProtectedRoute>
+      } />
+      <Route path="/admin/authors/:id" element={
+        <ProtectedRoute allowedRole="admin"><AuthorDetail /></ProtectedRoute>
       } />
 
       {/* 404 */}
