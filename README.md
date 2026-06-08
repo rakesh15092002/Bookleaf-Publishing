@@ -528,7 +528,7 @@ Title: "Whispers of the Ganges" | Pending: ₹3,570
 
 ---
 
-## 📊 API Documentation
+## API Documentation
 
 > [!IMPORTANT]
 > 📬 **[Open Postman Collection](https://www.postman.com/workspace/My-Workspace~3fe61fd1-0725-4883-85ef-873f7c4c695f/collection/40693857-c16ff13f-9b4a-4c4f-bcd1-606b7b0e8515)** — Import & test all endpoints instantly, no setup needed
