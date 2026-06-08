@@ -27,7 +27,7 @@ A full-stack application for publishing companies to manage author relationships
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Node.js 18+ and npm
