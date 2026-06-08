@@ -1,63 +1,67 @@
 import { callAISmart } from './aiClient.js';
 import getDraftPrompt from '../../prompts/draft.prompt.js';
 import logger from '../../utils/logger.js';
-
-import royaltyKB from '../../knowledge-base/royalty.js';
-import isbnKB from '../../knowledge-base/isbn.js';
-import printingKB from '../../knowledge-base/printing.js';
-import distributionKB from '../../knowledge-base/distribution.js';
-import productionKB from '../../knowledge-base/production.js';
-import generalKB from '../../knowledge-base/general.js';
-
-const getRelevantKB = (category) => {
-  const kbMap = {
-    'Royalty & Payments':               royaltyKB,
-    'ISBN & Metadata Issues':           isbnKB,
-    'Printing & Quality':               printingKB,
-    'Distribution & Availability':      distributionKB,
-    'Book Status & Production Updates': productionKB,
-    'General Inquiry':                  generalKB
-  };
-
-  return kbMap[category] || generalKB;
-};
+import ragService from '../rag/rag.service.js';
+import ragAnalytics from '../rag/rag.analytics.js';
 
 const generate = async (draftData) => {
-  // 🟢 FIX 1: author_name aur author_city destructured 
+  // Destructure ticket data
   const { subject, description, category, bookData, author_name, author_city } = draftData; 
   
   try {
-    logger.ai('Generating draft response...', { category });
+    logger.ai('Generating draft response with RAG...', { category });
 
-    const relevantKB = getRelevantKB(category);
+    // 🟢 RAG RETRIEVAL: Get only the most relevant knowledge chunks
+    const query = `${subject} ${description}`;
+    const ragResult = await ragService.retrieveRelevantKnowledge(query, category, 3);
     
+    // Log to analytics
+    ragAnalytics.logRetrieval(query, category, ragResult);
+    
+    logger.ai('RAG retrieval result', {
+      strategy: ragResult.strategy,
+      chunkCount: ragResult.chunks.length,
+      tokenEstimate: ragResult.tokenEstimate,
+      tokenSavings: `${Math.round((1 - ragResult.tokenEstimate / 2000) * 100)}%` // Approx comparison
+    });
+
     const prompt = getDraftPrompt(
       { subject, description, author_name, author_city }, 
       bookData, 
       category, 
-      relevantKB
+      ragResult.context,
+      ragResult.similarities // Pass similarity scores for better context
     );
 
-    // Smart model for better draft quality
+    // Smart model for better draft quality with reduced token input
     const draft = await callAISmart(prompt, 400);
 
-    logger.ai('Draft generated successfully', { category });
+    logger.ai('Draft generated successfully with RAG', { 
+      category,
+      inputTokens: ragResult.tokenEstimate 
+    });
 
     return {
       draft,
       source: 'ai',
-      category
+      category,
+      ragMetadata: {
+        strategy: ragResult.strategy,
+        retrievedChunks: ragResult.chunks.length,
+        inputTokens: ragResult.tokenEstimate
+      }
     };
 
   } catch (error) {
-    logger.error('Draft generation failed', error.message);
+    logger.error('Draft generation with RAG failed', error.message);
 
-    // Rate limit hit
+    // Rate limit hit - use template
     if (error.status === 429) {
       return {
         draft: getTemplateDraft(category),
         source: 'template',
-        category
+        category,
+        ragMetadata: { error: 'rate_limit' }
       };
     }
 
@@ -65,7 +69,8 @@ const generate = async (draftData) => {
     return {
       draft: null,
       source: 'manual',
-      category
+      category,
+      ragMetadata: { error: 'ai_unavailable' }
     };
   }
 };

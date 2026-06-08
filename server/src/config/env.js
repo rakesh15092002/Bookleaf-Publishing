@@ -11,6 +11,15 @@ const validateEnv = () => {
 
   const missing = required.filter(key => !process.env[key]);
 
+  if (process.env.USE_PINECONE === 'true') {
+    const pineconeRequired = [
+      'PINECONE_API_KEY',
+      'PINECONE_ENVIRONMENT',
+      'PINECONE_INDEX_NAME'
+    ];
+    missing.push(...pineconeRequired.filter(key => !process.env[key]));
+  }
+
   if (missing.length > 0) {
     console.error(`❌ Missing environment variables: ${missing.join(', ')}`);
     process.exit(1);

@@ -1,13 +1,18 @@
-const getDraftPrompt = (ticket, bookData, category, relevantKB) => {
-  // OPTIMIZATION 1: Removed formatting spaces from JSON.stringify.
-  // This converts the object into a single-line string, saving a significant amount of tokens.
+const getDraftPrompt = (ticket, bookData, category, relevantKB, similarities = null) => {
+  // OPTIMIZATION 1: Convert object to string (already done in RAG)
   const kbText = typeof relevantKB === 'object'
     ? JSON.stringify(relevantKB)
     : String(relevantKB);
 
+  // OPTIMIZATION 2: Add RAG context hint if similarities provided
+  const ragHint = similarities && similarities.length > 0
+    ? `\n[RETRIEVAL QUALITY: Retrieved ${similarities.length} most relevant knowledge chunks]\n`
+    : '';
+
   return `You are an empathetic support rep at BookLeaf Publishing. Draft a helpful response to this ticket.
 
-[KNOWLEDGE BASE]
+[KNOWLEDGE BASE - RAG OPTIMIZED]
+${ragHint}
 ${kbText}
 
 [TICKET INFO]
@@ -27,7 +32,7 @@ ${bookData ? `Title: ${bookData.title} | Status: ${bookData.status} | ISBN: ${bo
 5. ACCOUNTABILITY: If the issue is BookLeaf's fault (e.g., delays, ISBN errors), own it directly. No corporate deflection.
 6. STYLE: 100-150 words. Simple language, no jargon.
 
-DRAFT RESPONSE:`;
+DRAFT RESPONSE:`
 };
 
 export default getDraftPrompt;
